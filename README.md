@@ -17,7 +17,6 @@ Spatial Interpolation Toolbox depends on the following Python Packages:
 - `pyqt`
 
 ### Conda 
-------
 
 These packages depend on several low-level libraries for geospatial analysis, and can be challenging to install. For this reason, I recommend installing all of the dependencies using the [conda package manager](https://conda.io/en/latest/). Conda can be obtained by installing the [Anaconda Distribution](https://www.anaconda.com/products/individual) (A free Python distribution tailored for data science).
 
@@ -34,7 +33,6 @@ Once you have conda installed, launch Anaconda Prompt. Then, download this repo 
 >conda activate spatial_toolbox
 
 ### Launching Spatial Interpolation Toolbox
-------------------------------------
 
 Now that you have the repo downloaded, conda installed, and your new environment running, you can launch Spatial Interpolation Toolbox from Anaconda Prompt using this command:
 
@@ -45,7 +43,6 @@ When you're finished, you can either close the GUI or press Ctrl+C in the Anacon
 ## Example Usage
 
 ### Areal Weighting
-
 
 For this example, we will be using open data from Philadelphia. The first shapefile is [crash data aggregated by Traffic Analysis zone (TAZ)](https://github.com/CityOfPhiladelphia/crash-data). The second shapefile is [Census Block Groups](https://www.opendataphilly.org/dataset/census-block-groups).
 
