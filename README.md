@@ -3,14 +3,12 @@
 Graphical user-interface for interpolating geographic vector data
 
 ## Introduction
----------------
 
 Spatial Interpolation Toolbox is a Python-based GUI that is able to interpolate spatial data in vector format. Spatial Interpolation Toolbox currently implements six different forms of spatial interpolation that are based on existing bodies of research
 
  Many forms of spatial interpolation are quite involved, and not easily accessible to GIS analyts. The goal of the Spatial Interpolation Toolbox is to offer a simplified and free way to interpolate spatial data.
 
  ## Installations & Setup
- ------------------
 
 Spatial Interpolation Toolbox depends on the following Python Packages:
 
@@ -45,7 +43,6 @@ Now that you have the repo downloaded, conda installed, and your new environment
 When you're finished, you can either close the GUI or press Ctrl+C in the Anaconda Prompt terminal.
 
 ## Example Usage
-----------------
 
 ### Areal Weighting
 
@@ -68,7 +65,6 @@ This will output a new shapefile to the directory that you chose. Lets open the 
 ![aw_output](https://user-images.githubusercontent.com/67876029/139040841-f38711a3-7b1d-4bdf-a709-4037d2f5eb70.png)
 
 ## Troubleshooting
-------------------
 
 Common issues:
 
