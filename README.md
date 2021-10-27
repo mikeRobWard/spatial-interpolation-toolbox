@@ -54,18 +54,18 @@ For this example, we will be using open data from Philadelphia. The first shapef
 
 To begin, lets take a look at our two shapefiles in your preferred GIS viewer:
 
-![aw](testing_data/aw/aw_test.png)
+![aw_test](https://user-images.githubusercontent.com/67876029/139040847-80f13d49-a526-400a-928c-c0a3f422ac21.png)
 
 In this example, we want to interpolate the number of crashes from TAZ in the source layer, to Census Block group in our target layer. We can see from the crash-data attributes that the field for aggregated crashes is named `Count_` 
 
 Lets input the fields into Spatial Interpolation Toolbox:
 
 
-![aw_inputs](testing_data/aw/aw_inputs.jpg)
+![aw_inputs](https://user-images.githubusercontent.com/67876029/139040840-7d7aec91-edc9-4895-b095-d6454624fb91.JPG)
 
 This will output a new shapefile to the directory that you chose. Lets open the new shapefile and compare it to our source shapefile, the crash data by TAZ:
 
-![aw_output](testing_data/aw/aw_output.png)
+![aw_output](https://user-images.githubusercontent.com/67876029/139040841-f38711a3-7b1d-4bdf-a709-4037d2f5eb70.png)
 
 ## Troubleshooting
 ------------------
