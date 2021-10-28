@@ -59,9 +59,9 @@ These packages depend on several low-level libraries for geospatial analysis, an
 
 Once you have conda installed, launch Anaconda Prompt. Then, download this repo and change directory to the folder where you've downloaded the repo.
 
-    git clone https://github.com/mikeRobWard/spatial-interpolation-toolbox   
+    git clone https://github.com/mikeRobWard/spatial-interpolation-toolbox
 
-<b>
+<!---->
 
     cd spatial-interpolation-toolbox
 
@@ -69,7 +69,7 @@ Once you have conda installed, launch Anaconda Prompt. Then, download this repo 
 
     conda create --name spatial_toolbox --file requirements.txt
 
-<b>
+<!---->
 
     conda activate spatial_toolbox
 
