@@ -64,5 +64,5 @@ class Ui_sp_int_tbox(object):
         self.boxSelectmethod.setItemText(4, _translate("sp_int_tbox", "Parcel Method"))
         self.boxSelectmethod.setItemText(5, _translate("sp_int_tbox", "Expert System"))
         self.buttonOpenmethod.setText(_translate("sp_int_tbox", "Open"))
-        self.label_3.setText(_translate("sp_int_tbox", "<html><head/><body><p><a href=\"https://github.com/mikeRobWard/spatial-interpolation-toolbox\"><span style=\" text-decoration: underline; color:#0000ff;\">Created by: Michael Ward &amp; John Fitzgibbons</span></a></p><p>Documentation</p></body></html>"))
+        self.label_3.setText(_translate("sp_int_tbox", "<html><head/><body><p><a href=\"https://github.com/mikeRobWard/spatial-interpolation-toolbox\"><span style=\" text-decoration: underline; color:#0000ff;\">Documentation</span></a></p></body></html>"))
 
