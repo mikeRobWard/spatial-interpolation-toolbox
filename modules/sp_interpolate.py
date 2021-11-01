@@ -25,18 +25,23 @@ def arealwt(source, target, cols = [None], suffix = ''):
     target['_index'] = target.index
     
     #calculate source areas
+    print("calculating source area")
     source['source_area'] = source.geometry.area
     
     #intersect source and target
+    print("calculating target area")
     joined1 = gpd.overlay(source, target, how = 'intersection')
     
     #calculate intersected areas
+    print("calculating intersected area")
     joined1['intersect_area'] = joined1.geometry.area
     
     #calculate areal weight per intersected polygon
+    print("calculating areal weight")
     joined1["AREAL_WT"] = joined1['intersect_area'] / joined1['source_area']    
     
     #interpolate designated columns, create list to include in target dataframe
+    print("interpolating designated fields")
     new_cols = []
     for col in cols:
         new_col = col + suffix
@@ -44,6 +49,7 @@ def arealwt(source, target, cols = [None], suffix = ''):
         joined1[new_col] = joined1["AREAL_WT"] * joined1[col]
     
     #merge interpolated results to target dataframe
+    print("merging results")
     results = joined1.groupby('_index').sum()
     final = pd.merge(target, results[new_cols], on='_index')
     del final['_index']
@@ -73,6 +79,7 @@ def binary_vector(source, ancillary, exclude_col=(),
     source['division'] = source.index
            
     #drop excluded rows from ancillary data
+    print("masking")
     binary_mask = ancillary[exclude_col].isin(exclude_val)
     ancillary = ancillary[~binary_mask]
     
@@ -80,18 +87,22 @@ def binary_vector(source, ancillary, exclude_col=(),
     ancillary = ancillary[['geometry']]
           
     #intersect source file and ancillary file
+    print("overlaying shapefiles")
     mask = gpd.overlay(source, ancillary, how='intersection')
     
     #calculate and store areas of intersected zone
+    print("calculating intersected areas")
     mask['intersectarea'] = (mask.area)  
 
-    #calculate sum of polygon areas by tract     
+    #calculate sum of polygon areas by tract
     masksum = mask.groupby('division')['intersectarea'].sum()
     
     # merge summmed areas back to main dataframe
+    print("merging dataframes")
     target = mask.merge(masksum, on='division')
     
     # calculate areal weight of areas
+    print("calculating areal weight")
     target["AREAL_WT"] = target['intersectarea_x'] / target['intersectarea_y']
 
     # loop through columns that user wants to interpolate, add suffix
@@ -134,19 +145,23 @@ def parcel_method(zone, parcel, tu_col, ru_col, ba_col, ra_col, cols = [None]):
     zonecopy = zone.copy()
     
     # calculate ara for parcels
+    print("calculating adjusted residential area")
     ara_parcel['M'] = ara_parcel.apply(lambda x: 1 if x[ra_col]==0 and x[ru_col] !=0 else 0, axis=1)
     ara_parcel['ara'] = (ara_parcel['M'] *((ara_parcel[ba_col] * ara_parcel[ru_col]) / ara_parcel[tu_col])) + ara_parcel[ra_col]
     
     # sum ara for zone
+    print("summing adjusted residential area")
     zonecopy['_bindex'] = zonecopy.index
     ara_zone = gpd.overlay(zonecopy, ara_parcel, how='intersection')
     ara_zone = ara_zone.groupby('_bindex')['ara'].sum().reset_index(name='ara_zone')         
             
     # calculate RU for zone
+    print("calculating residential units")
     ru_zone = gpd.overlay(zonecopy, parcel, how='intersection')
     ru_zone = ru_zone.groupby('_bindex')[ru_col].sum().reset_index(name='ru_zone')  
     
     # Calculate dasymetrically derived populations based on RU and ara
+    print("interpolating based on residential units")
     intp_zone = gpd.overlay(zonecopy, ara_parcel, how='intersection')
     intp_zone = intp_zone.merge(ru_zone, on='_bindex')
     intp_zone = intp_zone.merge(ara_zone, on='_bindex')
@@ -155,7 +170,7 @@ def parcel_method(zone, parcel, tu_col, ru_col, ba_col, ra_col, cols = [None]):
         new_col = 'ru_derived_' + col 
         new_cols.append(new_col)
         intp_zone[new_col] = intp_zone[col] * intp_zone[ru_col] / intp_zone['ru_zone']
-        
+    print("interpolating based on adjusted residential area")
     new_cols = []    
     for col in cols:
         new_col = 'ara_derived_' + col 
@@ -198,26 +213,34 @@ def expert_system(large_zone, small_zone, parcel, tu_col, ru_col, ba_col, ra_col
     small_zone['index_s'] = small_zone.index
     
     # call parcel method on large interpolation zone
+    print("performing parcel method on large zone")
     expert_large = parcel_method(large_zone, parcel, tu_col, ru_col, ba_col, ra_col, [intp_col])    
     # call parcel method on small interpolation zone
+    print("performing parcel method on small zone")
     expert_small = parcel_method(small_zone, parcel, tu_col, ru_col, ba_col, ra_col, [intp_col])
        
     # overlay the interpolated large zone with small zone, so that it can later by grouped by small zone index
+    print("overlaying shapefiles")
     expert = gpd.overlay(expert_large, small_zone, how='intersection')
     
-    # sum ara at small zone level 
+    # sum ara at small zone level
+    print("summing adjusted residential area at small zone")
     expert_ara = expert.groupby('index_s')['ara_derived_' + intp_col].sum().reset_index(name='expert_ara')    
     # sum ru at small zone level
+    print("summing residential units at small zone")
     expert_ru = expert.groupby('index_s')['ru_derived_' + intp_col].sum().reset_index(name='expert_ru')
     
     # merge ru and ara into same dataframe
+    print("merging dataframes")
     expert_parcel = expert_ara.merge(expert_ru, on = 'index_s')
     
     # pop diff calculation
+    print("calculating absolute values")
     expert_parcel['ara_diff'] = abs(expert_small[intp_col] - expert_parcel['expert_ara'])
     expert_parcel['ru_diff'] = abs(expert_small[intp_col] - expert_parcel['expert_ru'])
     
     # merge the aggregated data back with the small zone interpolated parcel dataframe
+    print("merging dataframes")
     expert_parcel = expert_small.merge(expert_parcel, on='index_s')
     
     # apply the expert system
@@ -258,18 +281,22 @@ def  lim_var(source, ancillary, class_col, class_dict, cols = [None], source_ide
         Target dataframe with interpolated columns.
     """
     #calculate source area
+    print("calculating source area")
     source['source_area'] = source.geometry.area
     
     #reindex for summing excess data and used area per source polygon
     source['_index'] = source.index
     
     #intersect source and ancillary
+    print("overlaying shapefiles")
     join1 = gpd.overlay(source, ancillary, how='intersection')
     
     #calculate intersected areas
+    print("calculating intersected areas")
     join1['intersect_area']=join1.geometry.area
     
     #Assign thresholds to area classes
+    print("assigning thresholds to area classes")
     for key, value in class_dict.items():
         join1.loc[join1[class_col]== key, 'threshold']=value
     
@@ -284,6 +311,7 @@ def  lim_var(source, ancillary, class_col, class_dict, cols = [None], source_ide
         new_cols.append(new_col)
         
         #calculate areal weight
+        print("calculating areal weight")
         join1['arealwt']=join1['intersect_area']/join1['source_area']
     
         #copy column for interpolation (lambda in loop doesn't work first time without this)
@@ -298,9 +326,10 @@ def  lim_var(source, ancillary, class_col, class_dict, cols = [None], source_ide
         #create copy of class_dict for multiple columns, drop values of None
         class_dict_copy = {key:val for key, val in class_dict.items() if val != None and val != 0}
         
+        print("performing interpolation")
         while class_dict_copy != {}:
         
-            #interpolate  
+            #interpolate
             join1[new_col] = join1.apply(lambda x: x['arealwt']*x[source_copy] if x[class_col] == min(class_dict_copy, key = class_dict_copy.get) else x[new_col], axis=1)
         
             #if new column exceeds threshold, new column gets threshold density
@@ -372,28 +401,35 @@ def n_class(source, ancillary, class_col, class_dict, cols = [None], source_iden
         Target dataframe with interpolated columns.
     """
     #calculate source area
+    print("calculating source area")
     source['source_area'] = source.geometry.area
     
     #reindex source for grouping sums later
     source['_index'] = source.index
     
     #assign percentages to landuse classes
+    print("assigning percentages to classes")
     for key, value in class_dict.items():
         ancillary.loc[ancillary[class_col]== key, '_percent']=value
     
     #intersect source and ancillary data
+    print("overlaying shapefiles")
     join1 = gpd.overlay(source, ancillary, how='intersection')
     
     #calculate intersected areas
+    print("calculating intersected area")
     join1['intersect_area']=join1.geometry.area
     
     #calculate areal weight
+    print("calculating areal weight")
     join1['arealwt']=join1['intersect_area']/join1['source_area']
     
     #multiply areal weight by user defined percentages
+    print("modifying areal weight based on class percentages")
     join1['class_weight']=join1['_percent'] * join1['arealwt']
     
     #sum of areal weight times percentage per source polygon
+    print("summing for source polygons")
     totals = join1.groupby('_index')['class_weight'].sum()
     totals.rename('temp_sum', inplace=True)
     join1 = join1.merge(totals, on ='_index')
@@ -402,6 +438,7 @@ def n_class(source, ancillary, class_col, class_dict, cols = [None], source_iden
     join1['class_frac'] = join1['class_weight']/join1['temp_sum']
     
     #interpolate designated columns, create list to include in final dataframe
+    print("interpolating designated fields")
     new_cols = []
     for col in cols:
         new_col = col + suffix

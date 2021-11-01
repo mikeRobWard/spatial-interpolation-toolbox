@@ -67,6 +67,7 @@ class aw_Worker(qtc.QObject):
     def worker_func(self, src, target, intp, suffix, save):
         count = 0
         try:
+            print("analyzing source shapefile")
             src = gpd.read_file(src)
             count += 10
             self.countChanged.emit(count)
@@ -74,6 +75,7 @@ class aw_Worker(qtc.QObject):
             self.src_error.emit()
             return
         try:
+            print("analyzing target shapefile")
             target = gpd.read_file(target)
             count += 10
             self.countChanged.emit(count)
@@ -84,6 +86,7 @@ class aw_Worker(qtc.QObject):
             outp = arealwt(src, target, intp, suffix)
             count += 75
             self.countChanged.emit(count)
+            print("saving results")
             outp.to_file(save)
             count += 5
             self.countChanged.emit(count)
@@ -184,6 +187,7 @@ class bm_Worker(qtc.QObject):
     def worker_func(self, src, target, exclude, exclude_val, suffix, intp, save):
         count = 0
         try:
+            print("analyzing source shapefile")
             src = gpd.read_file(src)
             count += 10
             self.countChanged.emit(count)
@@ -191,6 +195,7 @@ class bm_Worker(qtc.QObject):
             self.src_error.emit()
             return
         try:
+            print("analyzing ancillary shapefile")
             target = gpd.read_file(target)
             count += 10
             self.countChanged.emit(count)
@@ -202,6 +207,7 @@ class bm_Worker(qtc.QObject):
                 outp = binary_vector(src, target, exclude, exclude_val, suffix, intp)
                 count += 75
                 self.countChanged.emit(count)
+                print("saving results")
                 outp.to_file(save)
                 count += 5
                 self.countChanged.emit(count)
@@ -211,6 +217,7 @@ class bm_Worker(qtc.QObject):
                 outp = binary_vector(src, target, exclude, exclude_val, suffix, intp)
                 count += 75
                 self.countChanged.emit(count)
+                print("saving results")
                 outp.to_file(save)
                 count += 5
                 self.countChanged.emit(count)
@@ -313,6 +320,7 @@ class lv_Worker(qtc.QObject):
     def worker_func(self, src, target, cls, clsdict, intp, srcid, suffix, save):
         count = 0
         try:
+            print("analyzing source shapefile")
             src = gpd.read_file(src)
             count += 10
             self.countChanged.emit(count)
@@ -320,6 +328,7 @@ class lv_Worker(qtc.QObject):
             self.src_error.emit()
             return
         try:
+            print("analyzing ancillary shapefile")
             target = gpd.read_file(target)
             count += 10
             self.countChanged.emit(count)
@@ -327,6 +336,7 @@ class lv_Worker(qtc.QObject):
             self.target_error.emit()
             return
         try:
+            print("converting inputs to dictionary")
             # read keypairs into dict splitting the strings on commas and colons
             new_dict = {}
             for keyval in clsdict.split(","):
@@ -346,6 +356,7 @@ class lv_Worker(qtc.QObject):
             outp = lim_var(src, target, cls, new_dict, intp, srcid, suffix)
             count += 55
             self.countChanged.emit(count)
+            print("saving results")
             outp.to_file(save)
             count += 5
             self.countChanged.emit(count)
@@ -449,6 +460,7 @@ class nc_Worker(qtc.QObject):
     def worker_func(self, src, target, cls, clsdict, intp, srcid, suffix, save):
         count = 0
         try:
+            print("analyzing source shapefile")
             src = gpd.read_file(src)
             count += 10
             self.countChanged.emit(count)
@@ -456,6 +468,7 @@ class nc_Worker(qtc.QObject):
             self.src_error.emit()
             return
         try:
+            print("analyzing ancillary shapefile")
             target = gpd.read_file(target)
             count += 10
             self.countChanged.emit(count)
@@ -463,6 +476,7 @@ class nc_Worker(qtc.QObject):
             self.target_error.emit()
             return
         try:
+            print("converting inputs to dictionary")
             # read keypairs into dict splitting the strings on commas and colons
             new_dict = {}
             for keyval in clsdict.split(","):
@@ -482,6 +496,7 @@ class nc_Worker(qtc.QObject):
             outp = n_class(src, target, cls, new_dict, intp, srcid, suffix)
             count += 55
             self.countChanged.emit(count)
+            print("saving results")
             outp.to_file(save)
             count += 5
             self.countChanged.emit(count)
@@ -585,6 +600,7 @@ class pm_Worker(qtc.QObject):
     def worker_func(self, src, target, tu, ru, ba, ra, intp, save):
         count = 0
         try:
+            print("analyzing source shapefile")
             src = gpd.read_file(src)
             count += 10
             self.countChanged.emit(count)
@@ -592,6 +608,7 @@ class pm_Worker(qtc.QObject):
             self.src_error.emit()
             return
         try:
+            print("analyzing parcel shapefile")
             target = gpd.read_file(target)
             count += 10
             self.countChanged.emit(count)
@@ -602,6 +619,7 @@ class pm_Worker(qtc.QObject):
             outp = parcel_method(src, target, tu, ru, ba, ra, intp)
             count += 75
             self.countChanged.emit(count)
+            print("saving results")
             outp.to_file(save)
             count += 5
             self.countChanged.emit(count)
@@ -705,6 +723,7 @@ class em_Worker(qtc.QObject):
     def worker_func(self, src, nest, parcel, tu, ru, ba, ra, intp, save):
         count = 0
         try:
+            print("analyzing source shapefile")
             src = gpd.read_file(src)
             count += 10
             self.countChanged.emit(count)
@@ -712,6 +731,7 @@ class em_Worker(qtc.QObject):
             self.src_error.emit()
             return
         try:
+            print("analyzing nested shapefile")
             nest = gpd.read_file(nest)
             count += 10
             self.countChanged.emit(count)
@@ -719,6 +739,7 @@ class em_Worker(qtc.QObject):
             self.target_error.emit()
             return
         try:
+            print("analyzing parcel shapefile")
             parcel = gpd.read_file(parcel)
             count += 10
             self.countChanged.emit(count)
@@ -729,6 +750,7 @@ class em_Worker(qtc.QObject):
             outp = expert_system(src, nest, parcel, tu, ru, ba, ra, intp)
             count += 65
             self.countChanged.emit(count)
+            print("saving results")
             outp.to_file(save)
             count += 5
             self.countChanged.emit(count)
