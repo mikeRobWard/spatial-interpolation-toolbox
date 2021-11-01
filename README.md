@@ -51,9 +51,9 @@ This is the home to Spatial Interpolation Toolbox, a graphical user interface (G
 
 ## Introduction 
 
-Spatial Interpolation Toolbox is a Python-based GUI that is able to interpolate spatial data in vector format. Spatial Interpolation Toolbox currently implements six different forms of spatial interpolation that are based on existing bodies of research.
+Spatial Interpolation Toolbox is a Python-based GUI that is able to interpolate spatial data in vector format. Spatial Interpolation Toolbox currently implements six different forms of spatial interpolation that are based on [existing bodies of research](#sources).
 
- Many forms of spatial interpolation are quite involved, and not easily accessible to data analysts. The goal of the Spatial Interpolation Toolbox is to offer a simplified and free way to interpolate spatial data.
+Advanced forms of spatial interpolation are not easily accessible to all data analysts. The goal of the Spatial Interpolation Toolbox is to offer a convenient and free way to interpolate spatial data.
 
 
 ## Installation and Setup 
@@ -90,7 +90,7 @@ Now that you have the repo downloaded, conda installed, and your new environment
 
     python sp_int_toolbox.py
 
-When you're finished, you can either close the GUI or press Ctrl+C in the Anaconda Prompt terminal.
+When you're finished using the toolbox, you can either close the GUI or enter Ctrl+C in the Anaconda Prompt terminal.
 
 ## Description and Example Usage 
 
@@ -204,7 +204,7 @@ The parcel method will interpolate population into two new fields which are calc
 
 ![pm_ru_output](https://user-images.githubusercontent.com/67876029/139627913-7241e00d-d358-4aa9-998c-0802620bb531.png)
 
-There are subtle differences in the outcomes of interpolation based on whether adjusted residential area or number of residential units are used as proxies for approximating population density. The next method, Cadastral-Based Expert Dasymetric System, can be used to determine which proxy is a more accurate determinant of population.
+There are subtle differences in the outcomes of interpolation based on whether adjusted residential area or number of residential units are used as proxies for approximating population density. For a more in-depth explanation of the parcel based method, I recommend reading "Mapping population distribution in the urban environment: The cadastral-based expert dasymetric system" by Maantay et al. The next method, Cadastral-Based Expert Dasymetric System, can be used to determine which proxy is a more accurate determinant of population.
 
 ### Cadastral-Based Expert Dasymetric System
 
