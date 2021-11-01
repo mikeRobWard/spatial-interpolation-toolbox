@@ -229,7 +229,7 @@ The mapped output of these inputs should look similar to this (the field `expert
 
 ![es_output](https://user-images.githubusercontent.com/67876029/139705022-f6045f26-9f2b-4d24-ae00-af0723e4695e.png)
 
-The dataframe that results from the CEDS method contains both the `ru_derived` and `ara_derived` interpolations for population, as well as a new field named `expert_sys`.
+The dataframe that results from the CEDS method contains both the `ru_derived` and `ara_derived` interpolations for population, as well as a new field named `expert_sys`. As seen in the dataframe below, CEDS determines whether to use `ru_derived` or `ara_derived` to measure population, on a census block group basis. In Block Group 3 of `GEOID` 360610271003 CEDS chooses the `ru_derived` population, then chooses the `ara_derived` population for block group 1 of `GEOID` 360610277001.
 
 ![es_pandas](https://user-images.githubusercontent.com/67876029/139714535-e98147e3-a1b4-43dd-b13d-8b8fe0b08afb.JPG)
 
