@@ -4,7 +4,6 @@ Spatial Interpolation Toolbox
 <p align="center">
     <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/mikeRobWard/spatial-interpolation-toolbox">
     <img alt="GitHub top language" src="https://img.shields.io/github/languages/top/mikeRobWard/spatial-interpolation-toolbox">
-    <img alt="GitHub repo size" src="https://img.shields.io/github/repo-size/mikeRobWard/spatial-interpolation-toolbox">
     <a href="https://github.com/mikeRobWard/spatial-interpolation-toolbox/issues">
         <img src="https://img.shields.io/github/issues/mikeRobWard/spatial-interpolation-toolbox"
             alt="Issues Open"></a>
@@ -44,6 +43,7 @@ This is the home to Spatial Interpolation Toolbox, a graphical user interface (G
     - [Usage](#usage-4)
   - [Cadastral-Based Expert Dasymetric System](#cadastral-based-expert-dasymetric-system)
     - [Description](#description-5)
+    - [Usage](#usage-5)
 - [Troubleshooting](#troubleshooting)
 - [Sources](#sources)
 - [Special Thanks](#special-thanks)
@@ -211,15 +211,35 @@ There are subtle differences in the outcomes of interpolation based on whether a
 #### Description
 The CEDS method works in conjunction with the parcel based method to determine whether adjusted residential area or number of residential units are a more accurate determinant when disaggregating population. The CEDS method accepts three shapefiles, two zone shapefiles that must nest with each other and contain `geometry` and `population`, and a parcel shapefile that contains `geometry`, `total units` per parcel, `residential units` per parcel, `building area` per parcel, and `residential area` per parcel. The parcel based method is called twice inside the CEDS method, once using the larger zone shapefile as an input, and once using the smaller nested zone shapefile as an input to the parcel method. The populations at the tax lot level that were derived from the large zone are then reaggregated back up to the small zone level. The absolute value of the difference between the large zone based populations and small zone estimated population are then calculated. Finally, for each parcel, if the absolute difference between the large zone based population and the small zone estimated population based on residential units is less than or equal to the absolute difference between the large zone population and small zone estimated population based on adjusted residential area, then the population estimate from the small zone based on residential units is determined to be the more accurate disaggregation. Otherwise, the population estimate from the small zone based on adjusted residential area is determined by the CEDS method to be the more accurate measure of disaggregation. This method returns one shapefile at the tax lot level with the parcel based method calculations, plus an additional column that contains the selected outcome of the CEDS method.
 
+#### Usage
+
+Like the parcel method, we'll be using census block groups containing population, and parcel data. In addition, we are also using a larger census zone shapefile (which also contains population) that the smaller census zone nests inside, in this case census tracts.
+
+*The CEDS method works perfectly with census data, but theoretically will work with any two geographies that nest without intersecting*
+
+![es_input](https://user-images.githubusercontent.com/67876029/139633064-46b40ecf-3030-4c98-aba0-4ebbfe39773c.png)
+
+![parcels](https://user-images.githubusercontent.com/67876029/139633355-0e88f2f1-471b-48f4-987f-15b3e141811d.JPG)
+
+For our inputs, the field that we are interpolating (population) needs to have the same field name in both source shapefiles (tracts and block groups). Other than that condition, the inputs for CEDS are almost identical to the parcel method.
+
+![es_gui](https://user-images.githubusercontent.com/67876029/139633737-98b9b927-c527-409a-8adb-9ceda7202161.JPG)
+
+The mapped output of these inputs should look similar to this (the field `expert_sys` is mapped here):
+
+![es_output](https://user-images.githubusercontent.com/67876029/139705022-f6045f26-9f2b-4d24-ae00-af0723e4695e.png)
+
+The dataframe that results from the CEDS method contains both the `ru_derived` and `ara_derived` interpolations for population, as well as a new field named `expert_sys`.
+
+![es_pandas](https://user-images.githubusercontent.com/67876029/139714535-e98147e3-a1b4-43dd-b13d-8b8fe0b08afb.JPG)
+
+
 ## Troubleshooting
 
-Common issues:
+- Projection - Spatial Interpolation Toolbox will not reproject shapefiles. You must ensure that your shapefiles are in the correct projections before using this tool.
+- Error Handling - In addition to error pop-ups, Spatial Interpolation Toolbox will print status messages and exception messages to Anaconda prompt's terminal window. If the program fails during interpolation and the cause isn't clear, check the terminal for additional insight.
 
-- Projection - Spatial Interpolation Toolbox will not reproject shapefiles for you. You must ensure that your shapefiles are in the correct projections before using this tool.
-- Field type - The fields that you interpolate must be stored numerically (int / float). If you pass in a field that's stored as a string it may fail, even if it actually only contains numerical values.
-- Error Handling - In addition to error pop-ups, Spatial Interpolation Toolbox will print exception messages to Anaconda prompt's terminal window. If the program fails during interpolation and the cause isn't clear, check the terminal for additional insight.
-
-If you encounter a problem or bug that isn't answered here, please open an issue 👍
+If you encounter a problem or bug that isn't addressed here or in an already open issue, please open a new issue 👍
 
 ## Sources
 
