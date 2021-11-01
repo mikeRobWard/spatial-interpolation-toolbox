@@ -41,6 +41,7 @@ This is the home to Spatial Interpolation Toolbox, a graphical user interface (G
     - [Usage](#usage-3)
   - [Parcel Method](#parcel-method)
     - [Description](#description-4)
+    - [Usage](#usage-4)
   - [Cadastral-Based Expert Dasymetric System](#cadastral-based-expert-dasymetric-system)
     - [Description](#description-5)
 - [Troubleshooting](#troubleshooting)
@@ -133,7 +134,7 @@ This method will use the land use shapefile to mask out certain land use types f
 
 ![bm_inputs](https://user-images.githubusercontent.com/67876029/139186210-63b601db-8ad1-4b18-8fda-75d803c3e0b7.JPG)
 
-The field containing land use types is named `C_DIG1`, which contains a numbered value corresponding to the land use type. Residential corresponds to `1`, so we will exclude all other values. Land use shapefiles can contain hundreds of thousands of polygons, so be patient if you are processing a large area. The output of this interpolation should look similar to this:
+The field containing land use types is named `C_DIG1`, which contains a numbered value corresponding to the land use type. Residential corresponds to `1`, so we will exclude all other values. The output of this interpolation should look similar to this:
 
 ![bm_output](https://user-images.githubusercontent.com/67876029/139191000-5ac637d4-0f8f-4959-877e-be3af21e4f7c.png)
 
@@ -185,10 +186,29 @@ The output should look something like this:
 
 The parcel based method disaggregates population from a large geography to the tax lot level by using residential area and number of residential units as proxies for population distribution. It accepts two shapefiles, a zone shapefile with `geography` and `population`, and a parcel shapefile which contain `geography`, `total units` per parcel, `residential units` per parcel, `building area` per parcel, and `residential area` per parcel. This method returns a shapefile at the tax lot level that has two calculated columns of disaggregated population, one based on residential area and one based on residential units.
 
+#### Usage
+
+For the parcel method, we will use [tax lot data from NYC's MapPLUTO](https://www1.nyc.gov/site/planning/data-maps/open-data/dwn-pluto-mappluto.page), and [population at the census block group level from TIGER/Line](https://www.census.gov/cgi-bin/geo/shapefiles/index.php). Our data will look like this to begin:
+
+![pm_input](https://user-images.githubusercontent.com/67876029/139622142-f5ded048-5742-4fd3-93d0-5cf730354aaf.png)
+
+The data that we will be interpolating is population, which is currently aggregated in census block groups. Using the parcel method, the population can be disaggregated into individual parcels. Our inputs should look like this:
+
+![pm_gui](https://user-images.githubusercontent.com/67876029/139622140-4b98c313-6ec8-4679-a882-68a0607157c9.JPG)
+
+*Note: This method can take a long time to execute when calculating an area this large with hundreds of thousands of parcel polygons*
+
+The parcel method will interpolate population into two new fields which are calculated from different inputs. One of the new fields is named `ara_derived` (derived from adjusted residential area), and the other field is named `ru_derived` (derived from number of residential units). Below are the results of the parcel method, one map for each interpolation type:
+
+![pm_ara_output](https://user-images.githubusercontent.com/67876029/139627908-ebce82a4-7031-4f73-a822-197fd73b7894.png)
+
+![pm_ru_output](https://user-images.githubusercontent.com/67876029/139627913-7241e00d-d358-4aa9-998c-0802620bb531.png)
+
+There are subtle differences in the outcomes of interpolation based on whether adjusted residential area or number of residential units are used as proxies for approximating population density. The next method, Cadastral-Based Expert Dasymetric System, can be used to determine which proxy is a more accurate determinant of population.
+
 ### Cadastral-Based Expert Dasymetric System
 
 #### Description
-
 The CEDS method works in conjunction with the parcel based method to determine whether adjusted residential area or number of residential units are a more accurate determinant when disaggregating population. The CEDS method accepts three shapefiles, two zone shapefiles that must nest with each other and contain `geometry` and `population`, and a parcel shapefile that contains `geometry`, `total units` per parcel, `residential units` per parcel, `building area` per parcel, and `residential area` per parcel. The parcel based method is called twice inside the CEDS method, once using the larger zone shapefile as an input, and once using the smaller nested zone shapefile as an input to the parcel method. The populations at the tax lot level that were derived from the large zone are then reaggregated back up to the small zone level. The absolute value of the difference between the large zone based populations and small zone estimated population are then calculated. Finally, for each parcel, if the absolute difference between the large zone based population and the small zone estimated population based on residential units is less than or equal to the absolute difference between the large zone population and small zone estimated population based on adjusted residential area, then the population estimate from the small zone based on residential units is determined to be the more accurate disaggregation. Otherwise, the population estimate from the small zone based on adjusted residential area is determined by the CEDS method to be the more accurate measure of disaggregation. This method returns one shapefile at the tax lot level with the parcel based method calculations, plus an additional column that contains the selected outcome of the CEDS method.
 
 ## Troubleshooting
